@@ -288,40 +288,10 @@ public class EnchereController {
     @RequestMapping("/RechercheEncheres")
     public JsonData RechereAvance(@RequestParam String motsCle, @RequestParam String idCategorie,
             @RequestParam Double prixmin, @RequestParam Double prixmax,
-            @RequestParam String Datedebut, @RequestParam String DateFin) throws Exception {
+            @RequestParam String Datedebut, @RequestParam String DateFin,@RequestParam int Statut) throws Exception {
         JsonData json = new JsonData();
         try {
-            String requtes = "SELECT  * FROM enchere where 1=1";
-            if ( !motsCle.equalsIgnoreCase("") ) {
-                requtes += " AND description like '%" + motsCle + "%'";
-            }
-            if (idCategorie != null) {
-                requtes += " AND idCategorie='" + idCategorie + "'";
-            }
-            if (!DateFin.equalsIgnoreCase("") || !Datedebut.equalsIgnoreCase("")) {
-                if (!DateFin.equalsIgnoreCase("") && !Datedebut.equalsIgnoreCase("") ) {
-                    requtes += " AND (Date BETWEEN '" + Datedebut + "' and '" + DateFin + "' )";
-                }
-                if (DateFin.equalsIgnoreCase("") && Datedebut.equalsIgnoreCase("")) {
-                    requtes += " AND (Date <= '" + DateFin + "' )";
-                }
-                if (DateFin == null && Datedebut.equalsIgnoreCase("")) {
-                    requtes += " AND (Date >= '" + Datedebut + "' )";
-                }
-            }
-            if (prixmax != 0 || prixmin != 0 ) {
-                if (prixmax != 0 && prixmin != 0) {
-                    requtes += " AND (prixdepart BETWEEN " + prixmin + " and " + prixmax + ")";
-                }
-                if (prixmax != 0 && prixmin == 0) {
-                    requtes += " AND (prixdepart <=" + prixmax + ")";
-                }
-                if (prixmax == 0 && prixmin != 0) {
-                    requtes += " AND (prixdepart >=" + prixmin + ")";
-                }
-            }
-
-            ObjetBDD[] lc = new Enchere().Find(null, requtes);
+            Object[] lc=Enchere.getEnchereByCritere(motsCle, idCategorie, prixmin, prixmax, Datedebut, DateFin, Statut);
             json.setData(lc);
             json.setMessage("Operation select reussi");
         } catch (Exception e) {
@@ -331,7 +301,6 @@ public class EnchereController {
             json.setErreur(e.getMessage());
         }
         return json;
-
     }
 
 }

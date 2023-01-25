@@ -36,7 +36,7 @@ public class Connexion {
                 .applyConnectionString(connectionString)
                 .build();
         MongoClient mongoClient = MongoClients.create(settings);
-        MongoDatabase database = mongoClient.getDatabase("EnchereTest");
+        MongoDatabase database = mongoClient.getDatabase("EnchereUpdate");
         for (String collectionName : database.listCollectionNames()) {
             System.out.println(collectionName);
         }
