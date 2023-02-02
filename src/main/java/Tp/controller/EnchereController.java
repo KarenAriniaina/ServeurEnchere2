@@ -26,25 +26,57 @@ import Tp.model.Photo;
 import Tp.model.Configuration;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class EnchereController {
 
     @CrossOrigin
-    @PostMapping("/Enchere")
+    @PostMapping("/Enchere/")
     public JsonData AjoutEnchere(@RequestHeader("token") String token, @RequestHeader("idClient") String idClient,
-            @RequestParam String Nom, @RequestParam String idCategorie, @RequestParam double Jour,
-            @RequestParam double heure, @RequestParam double Minute,
-            @RequestParam Double PrixDepart, @RequestParam String Description,@RequestBody(required = true) String image) throws Exception {
-        JsonData json = new JsonData();
+            @RequestParam(defaultValue = "") String Nom, @RequestParam(defaultValue = "") String idCategorie, @RequestParam(defaultValue = "0") double Jour,
+            @RequestParam(defaultValue = "0") double heure, @RequestParam(defaultValue = "0") double Minute,
+            @RequestParam(defaultValue = "-1") double PrixDepart, @RequestParam(defaultValue = "") String Description,@RequestBody(required = false) String image) throws Exception {
+        System.out.println("niditra tato ihany aloha ewfgbg[fk[23f");
+                JsonData json = new JsonData();
         Connection con = null;
+        if(Jour==0 && heure==0 && Minute==0){
+            json.setData(null);
+            json.setMessage("Duree vide");
+            return json;
+        }
+        if(Nom.equalsIgnoreCase("")){
+            json.setData(null);
+            json.setMessage("Nom vide");
+            return json;
+        }
+        if(Description.equalsIgnoreCase("")){
+            json.setData(null);
+            json.setMessage("Description vide");
+            return json;
+        }
+        if(idCategorie.equalsIgnoreCase("")){
+            json.setData(null);
+            json.setMessage("Categorie vide");
+            return json;
+        }
+        if(PrixDepart==-1){
+            json.setData(null);
+            json.setMessage("Aucun prix de depart");
+            return json;
+        }
         double Duree = Jour + (heure / 60) + (Minute / 1440);
         Client c = new Client();
         c.setToken(token);
         c.setIdClient(idClient);
         Gson g=new Gson();
+        if(image==null || image.equalsIgnoreCase("")){
+            json.setData(null);
+            json.setMessage("Aucune image");
+            return json;
+        }
         Photo[] lp=g.fromJson(image,Photo[].class);
-        List<Photo> liste=new ArrayList<>();
+        List<String> liste=new ArrayList<>();
         for(Photo p:lp){
-            liste.add(p);
+            liste.add("data:image/"+ p.getFormat() + ";base64,"+p.getBase64String());
         }
         if (c.VerifToken()) {
             try {
@@ -65,6 +97,7 @@ public class EnchereController {
                     json.setMessage("Duree invalide");
                 } else {
                     e.setPhotos(liste);
+                    //System.out.println(liste.get(0).getBase64String());
                     e.Create(con);
                     e.setIdEnchere("Enchere_" + Integer.toString(e.currentSequence(con)));
                     Object[] lc = new Object[1];
@@ -78,7 +111,7 @@ public class EnchereController {
                 if (con != null)
                     con.rollback();
                 json.setData(null);
-                json.setMessage("Operation echoue");
+                json.setMessage(ex.getMessage());
                 json.setStatus(false);
                 json.setErreur(ex.getMessage());
             } finally {

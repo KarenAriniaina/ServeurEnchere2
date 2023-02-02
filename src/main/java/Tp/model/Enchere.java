@@ -34,7 +34,7 @@ public class Enchere extends ObjetBDD {
     private Double Commission;
     private String Categorie;
     
-    private List<Photo> photos;
+    private List<String> photos;
 
     private List<Encherir> encherir;
 
@@ -87,7 +87,10 @@ public class Enchere extends ObjetBDD {
         return PrixDepart;
     }
 
-    public void setPrixDepart(Double prixDepart) {
+    public void setPrixDepart(Double prixDepart) throws Exception{
+        if(prixDepart<=0){
+            throw new Exception("Prix de depart inferieur ou egale à 0");
+        }
         PrixDepart = prixDepart;
     }
 
@@ -174,7 +177,7 @@ public class Enchere extends ObjetBDD {
             e.setPrixDepart(doc.getDouble("prixdepart"));
             e.setDescription(doc.getString("description"));
             e.setEncherir((List<Encherir>) doc.get("encherir"));
-            e.setPhotos((List<Photo>) doc.get("photos"));
+            e.setPhotos((List<String>) doc.get("photos"));
             le.add(e);
         }
         return le.toArray();
@@ -206,7 +209,7 @@ public class Enchere extends ObjetBDD {
             e.setCategorie(doc.getString("Categorie"));
             e.setDescription(doc.getString("description"));
             e.setEncherir((List<Encherir>) doc.get("encherir"));
-            e.setPhotos((List<Photo>) doc.get("photos"));
+            e.setPhotos((List<String>) doc.get("photos"));
             le.add(e);
         }
         return le.toArray();
@@ -262,7 +265,7 @@ public class Enchere extends ObjetBDD {
             e.setPrixDepart(doc.getDouble("prixdepart"));
             e.setDescription(doc.getString("description"));
             e.setEncherir((List<Encherir>) doc.get("encherir"));
-            e.setPhotos((List<Photo>) doc.get("photos"));
+            e.setPhotos((List<String>) doc.get("photos"));
             le.add(e);
         }
         return le.toArray();
@@ -276,11 +279,11 @@ public class Enchere extends ObjetBDD {
         Categorie = categorie;
     }
 
-    public List<Photo> getPhotos() {
+    public List<String> getPhotos() {
         return photos;
     }
 
-    public void setPhotos(List<Photo> photos) {
+    public void setPhotos(List<String> photos) {
         this.photos = photos;
     }
 

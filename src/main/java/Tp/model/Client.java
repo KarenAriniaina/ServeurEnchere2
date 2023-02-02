@@ -62,7 +62,8 @@ public class Client extends ObjetBDD {
         return Nom;
     }
 
-    public void setNom(String nom) {
+    public void setNom(String nom) throws Exception{
+        if(nom.equalsIgnoreCase("")) throw new Exception("Nom vide");
         Nom = nom;
     }
 
@@ -70,7 +71,8 @@ public class Client extends ObjetBDD {
         return Email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(String email) throws Exception{
+        if(email.equalsIgnoreCase("")) throw new Exception("Email vide");
         Email = email;
     }
 
@@ -78,7 +80,8 @@ public class Client extends ObjetBDD {
         return Mdp;
     }
 
-    public void setMdp(String mdp) {
+    public void setMdp(String mdp) throws Exception{
+        if(mdp.equalsIgnoreCase("")) throw new Exception("Mot de passe vide");
         Mdp = mdp;
     }
 
@@ -123,7 +126,7 @@ public class Client extends ObjetBDD {
         return false;
     }
 
-    public void EncrypterMdp() throws NoSuchAlgorithmException {
+    public void EncrypterMdp() throws Exception {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.update(this.getMdp().getBytes());
         byte byteData[] = md.digest();
@@ -149,7 +152,7 @@ public class Client extends ObjetBDD {
             e.setCategorie(doc.getString("Categorie"));
             e.setDescription(doc.getString("description"));
             e.setEncherir((List<Encherir>)doc.get("encherir"));
-            e.setPhotos((List<Photo>) doc.get("photos"));
+            e.setPhotos((List<String>) doc.get("photos"));
             le.add(e);
         }
         return le.toArray();
