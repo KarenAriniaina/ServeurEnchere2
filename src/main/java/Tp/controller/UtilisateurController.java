@@ -3,7 +3,10 @@ package Tp.controller;
 import Tp.JSonData.JsonData;
 import Tp.model.Admin;
 import Tp.model.Client;
+import Tp.dao.Connexion;
 import Tp.dao.ObjetBDD;
+
+import java.sql.Connection;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -122,23 +125,31 @@ public class UtilisateurController {
     public JsonData InscriptionClient(@RequestParam("nom") String nom, @RequestParam("email") String email,
             @RequestParam("mdp") String mdp) throws Exception {
         JsonData json = new JsonData();
+        Connection con=null;
         try {
+            con=Connexion.getConnection();
+            con.setAutoCommit(false);
             Client c = new Client();
             c.setEmail(email);
             c.setMdp(mdp);
             c.setNom(nom);
             c.EncrypterMdp();
-            c.Create(null);
-            // c.setIdClient("Client_"+Integer.toString(c.currentSequence(null)));
+            c.Create(con);
+            c.setIdClient("Client_"+Integer.toString(c.currentSequence(con)));
             Object[] lc = new Object[1];
             lc[0] = c;
             json.setData(lc);
             json.setMessage("Operation Reussi");
+            con.commit();
         } catch (Exception e) {
+            if(con!=null) con.rollback();
             json.setData(null);
             json.setMessage("Operation echoue");
             json.setStatus(false);
             json.setErreur(e.getMessage());
+        }
+        finally{
+            if(con!=null) con.close();
         }
         return json;
 
