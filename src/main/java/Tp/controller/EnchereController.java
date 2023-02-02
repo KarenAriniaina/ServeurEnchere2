@@ -1,14 +1,20 @@
 package Tp.controller;
 
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.google.gson.Gson;
 
 import Tp.JSonData.JsonData;
 import Tp.dao.Connexion;
@@ -16,6 +22,7 @@ import Tp.dao.ObjetBDD;
 import Tp.model.Client;
 import Tp.model.Enchere;
 import Tp.model.Encherir;
+import Tp.model.Photo;
 import Tp.model.Configuration;
 
 @RestController
@@ -26,13 +33,19 @@ public class EnchereController {
     public JsonData AjoutEnchere(@RequestHeader("token") String token, @RequestHeader("idClient") String idClient,
             @RequestParam String Nom, @RequestParam String idCategorie, @RequestParam double Jour,
             @RequestParam double heure, @RequestParam double Minute,
-            @RequestParam Double PrixDepart, @RequestParam String Description) throws Exception {
+            @RequestParam Double PrixDepart, @RequestParam String Description,@RequestBody(required = true) String image) throws Exception {
         JsonData json = new JsonData();
         Connection con = null;
         double Duree = Jour + (heure / 60) + (Minute / 1440);
         Client c = new Client();
         c.setToken(token);
         c.setIdClient(idClient);
+        Gson g=new Gson();
+        Photo[] lp=g.fromJson(image,Photo[].class);
+        List<Photo> liste=new ArrayList<>();
+        for(Photo p:lp){
+            liste.add(p);
+        }
         if (c.VerifToken()) {
             try {
                 con = Connexion.getConnection();
@@ -51,6 +64,7 @@ public class EnchereController {
                     json.setData(null);
                     json.setMessage("Duree invalide");
                 } else {
+                    e.setPhotos(liste);
                     e.Create(con);
                     e.setIdEnchere("Enchere_" + Integer.toString(e.currentSequence(con)));
                     Object[] lc = new Object[1];
@@ -259,7 +273,7 @@ public class EnchereController {
     }
 
     @CrossOrigin
-    @RequestMapping("/HistoriqueEncheres/")
+    @GetMapping("/HistoriqueEncheres/")
     public JsonData HitsoriqueEnchere(@RequestHeader("token") String token, @RequestHeader("idClient") String idClient)
             throws Exception {
         JsonData json = new JsonData();
@@ -301,6 +315,23 @@ public class EnchereController {
             json.setErreur(e.getMessage());
         }
         return json;
+    }
+
+    @CrossOrigin
+    @PostMapping("/Test/")
+    public String Test(@RequestBody(required = true) String image) {
+        Gson g=new Gson();
+        Photo[] lp=g.fromJson(image,Photo[].class);
+        List<Photo> liste=new ArrayList<>();
+        for(Photo p:lp){
+            liste.add(p);
+        }
+        //List lp=g.fromJson(image,List.class);
+        ////System.out.println(lp.get(0).toString());
+        //System.out.println(lp.get(0).getBase64String());
+        //Photo p=(Photo) lp.get(0);
+        System.out.println(liste.get(0).getFormat());
+        return g.toJson(liste);
     }
 
 }

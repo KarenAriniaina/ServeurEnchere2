@@ -64,7 +64,7 @@ public class Encherir extends ObjetBDD {
         MongoDatabase database = Connexion.getMongoConnection();
         MongoCollection<Document> collection = database.getCollection("Enchere");
         Document encherir = new Document("Client",client.getNom() )
-                    .append("Montant encheri", this.getMontant());
+                    .append("Montant_encheri", this.getMontant());
         Document update = new Document("$push", new Document("encherir", encherir));
         System.out.println(update.toJson());
         Document filtre=    new Document("idEnchere",this.getIdEnchere());

@@ -146,8 +146,10 @@ public class Client extends ObjetBDD {
             e.setNom(doc.getString("Nom"));
             e.setIdCategorie(doc.getString("idCategorie"));
             e.setPrixDepart(doc.getDouble("prixdepart"));
+            e.setCategorie(doc.getString("Categorie"));
             e.setDescription(doc.getString("description"));
             e.setEncherir((List<Encherir>)doc.get("encherir"));
+            e.setPhotos((List<Photo>) doc.get("photos"));
             le.add(e);
         }
         return le.toArray();
