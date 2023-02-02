@@ -32,6 +32,9 @@ public class Enchere extends ObjetBDD {
     private Timestamp Date;
     private Timestamp DateFin;
     private Double Commission;
+    private String Categorie;
+    
+    private List<Photo> photos;
 
     private List<Encherir> encherir;
 
@@ -145,6 +148,7 @@ public class Enchere extends ObjetBDD {
             filtre.append("idCategorie", this.getIdCategorie());
             filtre.append("idClient", this.getIdClient());
             this.setEncherir(new ArrayList<>());
+            filtre.append("photos", this.getPhotos());
             filtre.append("encherir", this.getEncherir());
             collection.insertOne(filtre);
         } catch (Exception ex) {
@@ -166,9 +170,11 @@ public class Enchere extends ObjetBDD {
             e.setIdEnchere(doc.getString("idEnchere"));
             e.setNom(doc.getString("Nom"));
             e.setIdCategorie(doc.getString("idCategorie"));
+            e.setCategorie(doc.getString("Categorie"));
             e.setPrixDepart(doc.getDouble("prixdepart"));
             e.setDescription(doc.getString("description"));
             e.setEncherir((List<Encherir>) doc.get("encherir"));
+            e.setPhotos((List<Photo>) doc.get("photos"));
             le.add(e);
         }
         return le.toArray();
@@ -197,8 +203,10 @@ public class Enchere extends ObjetBDD {
             e.setNom(doc.getString("Nom"));
             e.setIdCategorie(doc.getString("idCategorie"));
             e.setPrixDepart(doc.getDouble("prixdepart"));
+            e.setCategorie(doc.getString("Categorie"));
             e.setDescription(doc.getString("description"));
             e.setEncherir((List<Encherir>) doc.get("encherir"));
+            e.setPhotos((List<Photo>) doc.get("photos"));
             le.add(e);
         }
         return le.toArray();
@@ -249,13 +257,31 @@ public class Enchere extends ObjetBDD {
             e.setDateFin(Timestamp.valueOf(doc.getString("datefin")));
             e.setIdEnchere(doc.getString("idEnchere"));
             e.setNom(doc.getString("Nom"));
+            e.setCategorie(doc.getString("Categorie"));
             e.setIdCategorie(doc.getString("idCategorie"));
             e.setPrixDepart(doc.getDouble("prixdepart"));
             e.setDescription(doc.getString("description"));
             e.setEncherir((List<Encherir>) doc.get("encherir"));
+            e.setPhotos((List<Photo>) doc.get("photos"));
             le.add(e);
         }
         return le.toArray();
+    }
+
+    public String getCategorie() {
+        return Categorie;
+    }
+
+    public void setCategorie(String categorie) {
+        Categorie = categorie;
+    }
+
+    public List<Photo> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<Photo> photos) {
+        this.photos = photos;
     }
 
 }
