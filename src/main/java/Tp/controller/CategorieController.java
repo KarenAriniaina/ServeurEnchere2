@@ -33,6 +33,13 @@ public class CategorieController {
                 con.setAutoCommit(false);
                 Categorie c = new Categorie();
                 c.setDesignation(designation);
+                ObjetBDD[] liste=c.Find(con);
+                if(liste.length!=0){
+                    json.setData(null);
+                    json.setMessage("Categorie existe deja");
+                    json.setStatus(false);
+                    json.setErreur(null);
+                }
                 c.Create(con);
                 c.setIdCategorie("Categorie_" + Integer.toString(c.currentSequence(con)));
                 Object[] lc = new Object[1];
