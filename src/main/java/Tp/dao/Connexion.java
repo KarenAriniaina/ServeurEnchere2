@@ -22,10 +22,10 @@ public class Connexion {
     public static Connection getConnection() throws Exception {
         Connection con = null;
         Class.forName("org.postgresql.Driver");
-        //con = DriverManager.getConnection("jdbc:postgresql://postgresql-karenariniaina.alwaysdata.net:5432/karenariniaina_enchere",
-         //       "karenariniaina", "KarenRakoto123");
-        con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/enchere",
-               "postgres", "karen");
+        con = DriverManager.getConnection("jdbc:postgresql://postgresql-karenariniaina.alwaysdata.net:5432/karenariniaina_enchere",
+                "karenariniaina", "KarenRakoto123");
+        //con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/enchere",
+         //      "postgres", "karen");
          return con;
     }
 
