@@ -26,7 +26,8 @@ public class Configuration extends ObjetBDD {
         return DureMin;
     }
 
-    public void setDureMin(double dureMin) {
+    public void setDureMin(double dureMin) throws Exception{
+        if(dureMin<0) throw new Exception("Duree min<0");
         DureMin = dureMin;
     }
 
@@ -34,7 +35,8 @@ public class Configuration extends ObjetBDD {
         return DureeMax;
     }
 
-    public void setDureeMax(double dureeMax) {
+    public void setDureeMax(double dureeMax) throws Exception{
+        if(dureeMax<0) throw new Exception("Duree max<0");
         DureeMax = dureeMax;
     }
 
@@ -42,7 +44,8 @@ public class Configuration extends ObjetBDD {
         return Commission;
     }
 
-    public void setCommission(double commission) {
+    public void setCommission(double commission) throws Exception{
+        if(commission>100) throw new Exception("Commission>100%");
         Commission = commission;
     }
 
