@@ -332,7 +332,7 @@ public class EnchereController {
     }
 
     @CrossOrigin
-    @RequestMapping("/RechercheEncheres")
+    @GetMapping("/RechercheEncheres")
     public JsonData RechereAvance(@RequestParam String motsCle, @RequestParam String idCategorie,
             @RequestParam Double prixmin, @RequestParam Double prixmax,
             @RequestParam String Datedebut, @RequestParam String DateFin,@RequestParam int Statut) throws Exception {
