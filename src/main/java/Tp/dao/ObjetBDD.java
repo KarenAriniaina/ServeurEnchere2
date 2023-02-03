@@ -91,7 +91,7 @@ public class ObjetBDD {
         Statement st = null;
         try {
             if (c == null) {
-                c = Connexion.getConnection();
+                c = new Connexion().getConnection();
                 nullve = true;
             }
             c.setAutoCommit(false);
@@ -109,12 +109,20 @@ public class ObjetBDD {
                                 if (ob != null) {
                                     String value = ob.toString();
                                     boolean normal = verifier(value);
+                                    System.err.println(normal);
                                     if (normal == true) {
                                         sql = sql + "," + field;
                                         if ((isDouble(value) == true || isInteger(value) == true) && this.getClass().getDeclaredFields()[i].getType().isPrimitive()) {
                                             donnee = donnee + "," + value;
                                         } else {
-                                            donnee = donnee + ",'" + value + "'";
+                                            String val="";
+                                            for(int j=0;j<value.length();j++){
+                                                if(value.charAt(j)=='\''){
+                                                    val+="'";
+                                                }
+                                                val=val.concat(String.valueOf(value.charAt(j)));
+                                            }
+                                            donnee = donnee + ",'" + val + "'";
                                         }
                                     }
                                 }
@@ -125,12 +133,15 @@ public class ObjetBDD {
             }
             sql += ")";
             donnee += ")";
-            sql = sql + "VALUES ('" + NomTable + "_'|| nextval('s_" + NomTable + "')" + donnee;
+            sql = sql +  "VALUES ('" + NomTable + "_'|| nextval('s_" + NomTable + "')" + donnee;
             st = c.createStatement();
+            System.err.println(sql);
             st.execute(sql);
             c.commit();
         } catch (Exception e) {
-            if(c!=null) c.rollback();
+            if(c != null){
+                c.rollback();
+            }
             throw e;
         } finally {
             if (st != null) {
@@ -141,15 +152,16 @@ public class ObjetBDD {
             }
         }
     }
-
+    
     public void Update(Connection c) throws Exception {
         boolean nullve = false;
         Statement st = null;
         try {
             if (c == null) {
-                c = Connexion.getConnection();
+                c = new Connexion().getConnection();
                 nullve = true;
             }
+            c.setAutoCommit(false);
             String sql = "";
             String pkval = "";
             sql = sql + "UPDATE " + NomTable + " SET ";
@@ -174,11 +186,18 @@ public class ObjetBDD {
                                             }
                                             else sql = sql + ","+field + " =" + value;
                                         } else {
+                                            String val="";
+                                            for(int j=0;j<value.length();j++){
+                                                if(value.charAt(j)=='\''){
+                                                    val+="'";
+                                                }
+                                                val=val.concat(String.valueOf(value.charAt(j)));
+                                            }
                                             if(verif==0){
-                                                sql = sql +field + " = '" + value + "'"; 
+                                                sql = sql +field + " = '" + val + "'"; 
                                                 verif++;
                                             }
-                                            else sql = sql + ","+field + " = '" + value + "'";
+                                            else sql = sql + ","+field + " = '" + val+ "'";
                                         }
                                     } else {
                                         pkval = value;
@@ -191,11 +210,11 @@ public class ObjetBDD {
                 }
             }
             sql = sql + " WHERE " + PrimaryKey + "='" + pkval + "'";
-            System.out.println(sql);
             st = c.createStatement();
             st.execute(sql);
+            c.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            if(c!= null) c.rollback();
             throw e;
         } finally {
             if (st != null) {
@@ -236,7 +255,14 @@ public class ObjetBDD {
                                         if ((isDouble(value) == true || isInteger(value) == true) && this.getClass().getDeclaredFields()[i].getType().isPrimitive()) {
                                             sql = sql + " AND " + field + " = " + value;
                                         } else {
-                                            sql = sql + " AND " + field + " = '" + value + "'";
+                                            String vall="";
+                                            for(int j=0;j<value.length();j++){
+                                                if(value.charAt(j)=='\''){
+                                                    vall+="'";
+                                                }
+                                                vall=vall.concat(String.valueOf(value.charAt(j)));
+                                            }
+                                            sql = sql + " AND " + field + " = '" + vall + "'";
                                         }
                                     }
                                 }
